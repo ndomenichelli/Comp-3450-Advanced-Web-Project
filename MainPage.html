@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Videos</title>
+    <style>
+		/* #SignOutButton{
+			position: absolute;
+			right: 250px;
+			top: 100px;
+			z-index: 1;
+		}
+		#DeleteButton{
+			position: absolute;
+			right: 100px;
+			top: 100px;
+			z-index: 1;
+		} */
+		#postButton{
+			position: fixed;
+			right: 100px;
+			bottom: 100px;
+			z-index: 1;
+		}
+    </style>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<button id="postButton" type="button" class="btn btn-info" data-toggle='modal' data-target="#modal-post-video">Create Post</button>
+
+	<div class="container">
+		<div class=jumbotron>
+			<div class='row'>
+				<div class="col-md-6">
+					<h1 style='text-align:left'>Post a Video</h1>
+				</div>
+				<div class="col-md-6">
+					<h2 style='text-align:right'>- User: <?php echo $username; ?> -</h2>
+				</div>
+            </div>
+			<div class='row'>
+				<div class="col-md-7">
+				</div>
+				<div class="col-md-2">
+					<button id="SignOutButton" type="button" class="btn btn-primary">SignOut</button>	
+				</div>
+				<div class="col-md-3">
+					<button id="DeleteButton" type="button" class="btn btn-danger">Delete Account</button>
+				</div>
+			</div>
+			<div class='row'> 
+				<div class="col-md-6">
+					<label for='input-filter'>Filter:</label>
+					<!-- <input id='input-filter' class='form-control' type='text' autofocus> -->
+				</div>
+				<div class="col-md-2">
+					<!-- <label for='input-filter'>hhhhhhh</label> -->
+					<!-- <button id="FilterButton" type="button" class="btn btn-info">Filter</button> -->
+				</div>
+				<div class="col-md-4">
+					<label for="sel1">Sort By:</label>
+				</div>
+			</div>
+			<div class='row'>
+				<div class="col-md-6">
+					<input id='input-filter' class='form-control' type='text' autofocus>
+				</div>
+				<div class="col-md-2">
+					<button id="filter-Button" type="button" class="btn btn-info">Filter</button>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<select id="sel1" class="form-control" >
+							<option>Oldest to Newest</option>
+							<option>Newest to Oldest</option>
+							<option>Most Likes</option>
+							<option>Least Likes</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<form id='form-signout' method='post' action='controller.php' style='display:none'>
+		<input type='hidden' name='page' value='MainPage'>
+		<input type='hidden' name='command' value='SignOut'>
+    </form>
+	<form id='form-delete' method='post' action='controller.php' style='display:none'>
+		<input type='hidden' name='page' value='MainPage'>
+		<input type='hidden' name='command' value='DeleteAccount'>
+		<input type='hidden' name='username' value='<?php echo $username; ?>'>
+    </form>
+	
+	<!-- for 'post a question' -->
+                
+        <div class="modal fade" id="modal-post-video" role="dialog">  <!-- modal window -->
+            <div class="modal-dialog">
+                <div class="modal-content">  <!-- modal content -->
+                    <form id='form-post-video' method='post' action='controller.php'>
+                        <div class='modal-header'>  <!-- modal header -->
+							<h4 class="modal-title">Post a Video</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class='modal-body'>  <!-- modal body -->
+							<label for='input-post-video-title'>Title:</label>
+                            <input id='input-post-video-title' class='form-control' type='text' autofocus required>
+                            <label for='input-post-video-url'>Url:</label>
+                            <input id='input-post-video-url' class='form-control' type='text' autofocus required>
+							<label for='input-post-video-desc'>Description:</label>
+							<input id='input-post-video-desc' class='form-control' type='text'>
+							<label>Tags:</label>
+							<br>
+							<label class="checkbox-inline"><input id="tagFunny" type="checkbox" value="">Funny</label>
+							<label class="checkbox-inline"><input id="tagGaming" type="checkbox" value="">Gaming</label>
+							<label class="checkbox-inline"><input id="tagArt" type="checkbox" value="">Art</label>
+							<br>
+							<label for='input-post-video-tags'>Other:<label>
+							<input id='tagOther' class='form-control' type='text'>
+                        </div>
+                        <div class='modal-footer'>  <!-- modal footer -->
+                            <button id='submit-post-video' type="button" class="btn btn-primary">Submit</button>  <!-- not data-dismiss='modal' -->
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+					<form id='form-signout' method='post' action='controller.php' style='display:none'>
+						<input type='hidden' name='page' value='MainPage'>
+						<input type='hidden' name='command' value='PostVideo'>
+					</form>
+                </div>
+            </div>
+        </div>
+		
+		<div class='col-md-10 bg-success'>
+			<div id='content'>
+			</div>
+		</div>
+		<div>
+			<div id='content2'>test
+			</div>
+		</div>
+		
+		<!-- Code for single video UI -->
+		<!-- <div style="border: solid black 1px;" class="container"> -->
+			<!-- <h2>Responsive Embed</h2> -->
+			<!-- <p>Create a responsive video and scale it nicely to the parent element with an 16:9 aspect ratio</p> -->
+			<!-- <div class="embed-responsive embed-responsive-16by9"> -->
+				<!-- <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe> -->
+			<!-- </div> -->
+			<!-- <div class="form-group"> -->
+				<!-- <label for="likes">Likes:</label> -->
+				<!-- <span id ="likes">0</span> -->
+				<!-- <div class="btn-group btn-group-sm"> -->
+					<!-- <button type="button" class="btn btn-success" style="width: 30px">+</button> -->
+					<!-- <button type="button" class="btn btn-danger" style="width: 30px">-</button> -->
+				<!-- </div> -->
+				<!-- <br> -->
+				<!-- <label for="comment">Comment:</label> -->
+				<!-- <div class="input-group"> -->
+					<!-- <textarea id="TA0" class="form-control custom-control" rows="3" style="resize:none"></textarea>      -->
+					<!-- <span id="post-comment-btn0" class="input-group-addon btn btn-primary">Post</span> -->
+				<!-- </div> -->
+				<!-- <div id="posted-by"style="text-align:right;">Posted by: </div> -->
+			<!-- </div> -->
+		<!-- </div> -->
+	
+		<!-- </div> -->
+		<!-- <br> -->
+		<!-- <div style="border: solid black 1px;" class="container"> -->
+			<!-- <h2>Responsive Embed</h2> -->
+			<!-- <p>Create a responsive video and scale it nicely to the parent element with an 16:9 aspect ratio</p> -->
+			<!-- <div class="embed-responsive embed-responsive-16by9"> -->
+				<!-- <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe> -->
+			<!-- </div> -->
+			<!-- <div class="form-group"> -->
+				<!-- <label for="likes">Likes:</label> -->
+				<!-- <span id ="likes">0</span> -->
+				<!-- <div  class="btn-group btn-group-sm"> -->
+					<!-- <button id="test-like-btn0" type="button" class="btn btn-success" style="width: 30px">+</button> -->
+					<!-- <button id="test-dislike-btn0" type="button" class="btn btn-danger" style="width: 30px">-</button> -->
+				<!-- </div> -->
+				<!-- <br> -->
+				<!-- <label for="comment">Comment:</label> -->
+				<!-- <div class="input-group"> -->
+					<!-- <textarea id="TA1" class="form-control custom-control" rows="3" style="resize:none"></textarea>      -->
+					<!-- <span id="post-comment-btn1" class="input-group-addon btn btn-primary">Post</span> -->
+				<!-- </div> -->
+				<!-- <div style="text-align:right;">Posted by: </div> -->
+			<!-- </div>	 -->
+		<!-- </div> -->
+</body>
+</html>
+<script>
+	// When the 'SignOut' button is clicked
+	$('#SignOutButton').click(function() {
+		$('#form-signout').submit();
+	});
+</script>
+<script>
+	// When the 'SignOut' button is clicked
+	$('#DeleteButton').click(function() {
+		var check = confirm("Are you sure you want to Delete your account?");
+		
+		if(check){
+			$('#form-delete').submit();
+		}
+	});
+</script>
+<script>
+	// When the 'Submit' button on the 'PostVideo' modal window is clicked
+	$('#submit-post-video').click(function() 
+	{
+		alert("video posted");
+		$('#modal-post-video').modal('hide');
+		
+		var tagsValue = "";
+		if ($('#tagFunny').is(":checked"))
+		{
+			tagsValue += "funny ";
+		}
+		if ($('#tagGaming').is(":checked"))
+		{
+			tagsValue += "gaming ";
+		}
+		if ($('#tagArt').is(":checked"))
+		{
+			tagsValue += "art ";
+		}
+		if ($('#tagOther').val() != 0)
+		{
+			tagsValue += $('#tagOther').val();
+		}
+		
+		// Send then'PostQuestion' command using jQuery AJAX
+		
+		//alert($('#input-post-video-title').val());
+		//alert($('#input-post-video-url').val());
+		//alert($('#input-post-video-desc').val());
+		//alert("Tags: " + tagsValue + ""); 
+
+		// https://www.youtube.com/watch?v=pERXVqS54XE
+		// https://www.youtube.com/embed/pERXVqS54XE
+		
+		// https://www.youtube.com/watch?v=_AgnHQvP2Ww
+		// https://www.youtube.com/embed/_AgnHQvP2Ww
+		
+		// url modifciations
+		var url = $('#input-post-video-url').val();
+		
+		var index = url.indexOf("/",8);
+		var index3 = url.indexOf("=");
+		var res1 = url.slice(0,index+1);
+		var res2 = url.slice(index3+1);
+		
+		url = res1 + "embed/" + res2;
+		
+		var urlC = 'controller.php';  // controller
+		var query = { 	page:"MainPage", 
+						command:"PostVideo",
+						title: $('#input-post-video-title').val(),
+						url: url,
+						description: $('#input-post-video-desc').val(),
+						tags: tagsValue,
+						postedBy: "<?php echo $username; ?>",
+						
+						};  // read from the input element
+
+		$.post(urlC,
+			query,
+			function(data) {
+				$('#content').html(data);  // Need to display it in <div id='content'>
+				
+		});
+	});
+</script>
+<script>
+$('#sel1').change(function(){
+
+	//alert(this.value);
+	loadContent(this.value);
+});
+</script>
+<script>
+	// When the page loads, no search term
+	$(document).ready(loadContent($('#sel1').value));
+	// When filter button is pressed,
+	
+	$("#filter-Button").click(loadContent($('#sel1').value));
+	
+	
+	function loadContent(sortBy) {
+	
+		var sendStr = "";
+		switch(sortBy)
+		{
+			case 'Oldest to Newest':
+				sendStr = 'postId ASC';
+				break;
+			case 'Newest to Oldest':
+				sendStr = 'postId DESC';
+				break;
+			case 'Most Likes':
+				sendStr = 'likes DESC';
+				break;
+			case 'Least Likes':
+				sendStr = 'likes ASC';
+				break;
+			default:
+				sendStr = 'postId ASC';
+				break;
+		}
+	
+		//alert(sendStr);
+		//$('#modal-list-question').modal('hide');
+		
+		// Send then'ListQuestions' command using jQuery AJAX
+		
+		var url = "controller.php/";  // controller
+		var query =  { 	page:"MainPage", 
+						command:"ListVideos",
+						order2: sendStr,
+						term: $('#input-filter').val(),
+						
+						
+						}; // page, command, term, order - read the search term and order from the input element
+
+		$.post(url,query, function(data) {  // Need to display it in a table in <div id='content'>
+				//alert($('#input-filter').val());
+				var rows = JSON.parse(data);  // into an array
+				var str = '<table class="table table-hover">';
+				// Construt the table code
+				for (var i = 0; i < rows.length; i++)
+				{
+					str += '<tr>';
+					for (var p in rows[i])
+					{
+						str += '<td>' + rows[i][p] + '</td>';
+					}
+					str += '</tr>';
+				}
+				str += '</table>';
+				//$('#content').html(str); // Display the table in #content
+				
+				// Construt the frame
+				var str2 = "";
+				for (var i = 0; i < rows.length; i++)
+				{
+					str += '<tr>';
+					for (var p in rows[i])
+					{
+						str += '<td>' + rows[i][p] + '</td>';
+					}
+					str += '</tr>';
+					
+					//var div = '<div class="container">';
+					var h = '<h1>';
+					//var url = '<div class="embed-responsive embed-responsive-16by9">\n\t<iframe class="embed-responsive-item" src=">';
+					var p = '<p>';
+					
+					var postId = rows[i][0];	//rows[i][0] PostId
+					var title = rows[i][1];		//rows[i][1] Title
+					var url = rows[i][2];		//rows[i][2] Url
+					var desc = rows[i][3];		//rows[i][3] Description
+												//rows[i][4] Tags
+					var comment = rows[i][5]	//rows[i][5] Comment
+					var likes = rows[i][6]		//rows[i][6] Likes
+					var postedBy = rows[i][7] 	//rows[i][7] Posted By
+					
+					/* div += '</div>';
+					h += '</h1>';
+					url += '\"></iframe>\n</div>'
+					p += '</p>';
+					*/
+									
+					// iframe structure and main border
+					str2 +=
+						"<div style=\"border: solid black 1px;\"class=\"container\">" + 
+							"<h1>" + title + "</h1>" + 
+							"<p>" + desc + "</p>" + 
+							"<div class=\"embed-responsive embed-responsive-16by9\">" +
+								'<iframe class=\"embed-responsive-item\" src=\"' + url + '\"></iframe>' +
+							"</div>";
+					//like counter and buttons
+					str2 +=
+						"<div class=\"form-group\">" +
+							"<label for=\"likes\">Likes: </label> " +
+							"<span id =\"likes" + postId + "\">" + likes + " </span>" +
+							"<div class=\"btn-group btn-group-sm\">" +
+								"<button id=\"like-btn" + postId + "\" type=\"button\" class=\"btn btn-success\" style=\"width: 30px\">+</button>" +
+								"<button id=\"dislike-btn" + postId + "\" type=\"button\" class=\"btn btn-danger\" style=\"width: 30px\">-</button>" +
+							"</div>" +
+							"<br>";
+					
+					//if there is a comment on the video, display
+					//if(comment != "")	
+					//{
+						str2 += "<pre id=\"comment-section-" + postId + "\">" + comment + "</pre>";
+					//}
+					 
+					//display add comment section
+					str2 += 
+					
+							"<label for=\"comment\">Comment:</label>" +
+							"<div class=\"input-group\">" +
+								'<textarea id=\"TA' + postId +'\"class=\"form-control custom-control\" rows=\"3\" style=\"resize:none\"></textarea>' +
+								'<span id=\"post-comment-btn' + postId + '\"class=\"input-group-addon btn btn-primary\">Post</span>'+
+							"</div>" +
+							"<div style=\"text-align:right;\">Posted by: " + postedBy + "</div>";
+					
+						//close the form
+						str2 += "</div>";
+					//close the container
+					str2 += "</div>";
+							
+				}
+				// Display the table in #content
+				$('#content2').html(str2);			
+		});						
+	}
+				
+</script>
+<script>
+//script for like buttons
+$(document).on('click',"[id^='like-btn']",function()
+{
+	var buttonId = this.id;
+	buttonId = buttonId.substring(8);
+	alert("Like");
+	
+	var url = 'controller.php';  // controller
+		var query = { 	
+			page:"MainPage", 
+			command:"Like",
+			postID: buttonId 	
+		};  
+		$.post(url,
+			query,
+			function(data) {
+				$('#likes' + buttonId).html(data);  // Need to display it in <div id='likes0'>			
+			});	
+});
+//script for dislike buttons
+$(document).on('click',"[id^='dislike-btn']",function()
+{
+	var buttonId = this.id;
+	buttonId = buttonId.substring(11);
+	alert("Dislike");
+	
+	var url = 'controller.php';  // controller
+		var query = { 	
+			page:"MainPage", 
+			command:"Dislike",
+			postID: buttonId 	
+		};  
+		$.post(url,
+			query,
+			function(data) {
+				$('#likes' + buttonId).html(data);  // Need to display it in <div id='likes0'>			
+			});	
+});
+</script>
+<script>
+//script for posting a comment
+$(document).on('click',"[id^='post-comment-btn']",function()
+{
+	var buttonId = this.id;
+	buttonId = buttonId.substring(16);
+	var commentText = "";
+	commentText += $('#TA' + buttonId).val();
+	
+	var username = "<?php echo $username; ?>";
+	
+	commentText = '\"' + commentText + '\"' + " - " + username + "\n";
+	
+	alert("Comment Posted");
+	
+	var url = 'controller.php';  // controller
+		var query = { 	
+			page:"MainPage", 
+			command:"AddComment",
+			postID: buttonId,
+			comment: commentText
+		};  
+		$.post(url,
+			query,
+			function(data) {
+				$('#comment-section-' + buttonId).html(data);  // Need to display it in <div id='likes0'>			
+			});	
+	
+});
+</script>
+<!-- //script for like buttons
+					
+					str2 +=
+						"<script>" +
+						"$(document).ready(function(){" +
+							"$(\"#like-btn" + i + "\").click(function() {" +
+								"alert(\"like\");" +
+								"var url = \'controller.php\';" +
+								"var query = {" +
+									"page:\"MainPage\"," +
+									"command:\"Like\"," +
+									"postID:" + postId +  	
+								"};" +
+								"$.post(url," +
+									"query," +
+									"function(data) {" +
+										"$(\"#likes" + i + "\").html(data);" +
+									"});" +
+							"});" +
+						"});" +
+						"</script>"; -->
